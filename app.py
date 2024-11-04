@@ -1,6 +1,6 @@
 from dash import Dash, html, dcc, callback, Output, Input, dash_table
 from helper import get_cotacoes
-from graficos import cria_dados_candle
+from graficos import cria_dados_candle, criando_grafico_infla
 
 tickers = ['WEGE3.SA', 'ABEV3.SA', 'PETR4.SA', 'VALE3.SA', 'MGLU3.SA', 'PCAR3.SA', 'ITUB4.SA', 'BBDC4.SA', 'BBAS3.SA']
 
@@ -86,19 +86,45 @@ app.layout = html.Main(
                 )
             ],
             style = { 'grid-columns': '1', 'grid-row': '2', 'height': '50vh'}
-        )
+        ),
+        html.Div(
+            children= [ 
+                html.Div(
+                    html.H1(children = "Gráfico de Inflação", className='titulos-dash'
+                    ),
+                    style={'display': 'flex', 'justify-content': 'center'}
+                ),
+                html.Div(
+                    [
+                        dcc.Dropdown(['IPCA', 'IGP-M'], 'IPCA', id='drop_inflacao'),
+                        dcc.Dropdown(['6', '12', '24'], '6', id='drop_inflacao_periodo')
+                    ]
+                ),
+                html.Div(
+                    children= dcc.Graph(id='grafico_inflacao')
+                )
+            ],
+            style = { 'grid-columns': '1', 'grid-row': '2', 'height': '50vh'}
+        ),
     ],className='container'
 )
 
 @app.callback(
     
-    [Output('grafico_candle', 'figure')],
-    [Input('drop_candle', 'value'),
-     Input('drop_candle_periodo', 'value')]   
+    [Output('grafico_candle', 'figure'), Output('grafico_inflacao', 'figure')],
+    [
+        Input('drop_candle', 'value'),
+        Input('drop_candle_periodo', 'value'),
+        Input('drop_inflacao', 'value'),
+        Input('drop_inflacao_periodo', 'value')
+    ]   
 )
 
-def update_graficos(candle_value,candle_periodo):
-    return cria_dados_candle(candle_value, candle_periodo)
+def update_graficos(candle_value,candle_periodo, inflacao_value, inflacao_periodo):
+    return (
+            cria_dados_candle(candle_value, candle_periodo), 
+            criando_grafico_infla(inflacao_value, inflacao_periodo)
+        )
 
 if __name__ == '__main__': 
     app.run(debug=True)
