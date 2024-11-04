@@ -1,0 +1,16 @@
+body {
+  background-color: #303030;
+}
+
+.titulos-dash {
+  color: #ddd;
+  border: 1px solid #08F7F3;
+  border-radius: 8px;
+  padding: 8px
+}
+
+.container {
+  display: grid;
+  gap: 25px; 
+  grid-template-columns: repeat(2, 1fr)
+}
